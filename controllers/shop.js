@@ -8,7 +8,25 @@ exports.getProducts = (req, res, next) => {
     path: '/products'
   });
   });
-}
+};
+
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId, product => {
+    if (!product) {
+      return res.status(404).render("404", {
+        pageTitle: "404 Not Found",
+        path: req.url
+      });
+    }
+
+    res.render("shop/product-details", {
+      product,
+      pageTitle: product.title,
+      path: "/products"
+    });
+  });
+};
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll((products) => {
@@ -26,6 +44,12 @@ exports.getCart = (req, res, next) => {
     pageTitle: "Your Cart"
   });
 };
+
+exports.postCart = (req, res, next) => {
+  const prodId = req.body.productID;
+  console.log(prodId);
+  res.redirect('/cart');
+}
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
